@@ -1,7 +1,7 @@
 <?php   
  
 require_once("../../../wp-load.php");  
-require 'php-export-data.class.php';  
+require '../php-export-data.class.php';  
 
 $list = ( isset($_GET['list']) ) ? $_GET['list'] : 0;
 
