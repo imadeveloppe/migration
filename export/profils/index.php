@@ -44,7 +44,7 @@ if( !empty($results) ){
 		
 		$profil = array(
 			"ID"			=> $row->ID,
-			"user_email" 	=> get_userdata( $row->ID )->user_email,
+			"user_email" 	=> get_userdata( $row->user_id )->user_email,
 			"device" 		=> $row->device,
 			"status" 		=> $row->status,
 			"datetime" 		=> $row->datetime, 
@@ -74,8 +74,7 @@ if( !empty($results) ){
 			$profil['votes'] = implode('|', $arrayVotes);
 		} 
 		 
-	 
-		$profils[] = $profil;
+	 	$profil = array_merge(array_flip( $heading ), $profil);
 		$exporter->addRow( $profil ); 
 
 	endforeach;
