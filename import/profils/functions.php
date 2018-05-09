@@ -34,12 +34,37 @@
 
   	}
 
+  	function get_post_id_by_title($post_title, $type = "post", $output = OBJECT) {
+		global $wpdb;
+		$post = $wpdb->get_var ( $wpdb->prepare ( "SELECT ID FROM $wpdb->posts WHERE LOWER(post_title) = %s AND post_type='$type'", strtolower($post_title )) );
+		if ($post)
+			return get_post ( $post, $output )->ID;
+		return 0;
+	}
+
 	function get_product_id_by_ref($ref) {
 		global $wpdb;
 		$post = $wpdb->get_var ( $wpdb->prepare ( "SELECT P.ID FROM $wpdb->posts as P JOIN $wpdb->postmeta as PM on P.ID = PM.post_id WHERE meta_key = 'ref' AND meta_value = %s AND P.post_type='produits'", $ref ) );
 		if ($post)
 			return get_post ( $post, OBJECT )->ID;
 		return '';
+	}
+
+	function set_game($game_name)
+	{	
+		$game_id = get_post_id_by_title( $game_name, 'jeux' );
+		if( $game_id == 0 ){
+
+			$game_data = array(
+		        'post_title'    => $game_name,
+		        'post_type'     => 'jeux',
+        		'post_status'   => 'publish',
+		    );  
+			$game_id = wp_insert_post($game_data); 
+
+		}
+
+		return $game_id;
 	}
 
 	function set_product($product)
@@ -91,29 +116,6 @@
 		} 
 
 		return $output;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	} 
 
 ?>
