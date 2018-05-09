@@ -1,5 +1,13 @@
 <?php 
 
+function printr($array)
+{
+	echo "<pre>";
+		print_r($array);
+	echo "</pre>";  
+	die();
+}
+
 require_once("../../../wp-load.php");
 require '../php-export-data.class.php';   
 
@@ -26,7 +34,8 @@ if( !empty($results) ){
 			'description',
 			'language',
 			'file',
-			'like'
+			'like',
+			'votes'
 	); 
 	$exporter->addRow( $heading );
 
@@ -38,7 +47,7 @@ if( !empty($results) ){
 			"user_email" 	=> get_userdata( $row->ID )->user_email,
 			"device" 		=> $row->device,
 			"status" 		=> $row->status,
-			"datetime" 		=> $row->datetime,
+			"datetime" 		=> $row->datetime, 
 		);
 
 		$profils_meta = $wpdb->get_results("SELECT meta_key, meta_value FROM ".$wpdb->prefix."device_profilemeta WHERE device_profile_id = $row->ID ");
@@ -46,9 +55,29 @@ if( !empty($results) ){
 		foreach ($profils_meta as $key => $meta) {
 			$profil[$meta->meta_key] = $meta->meta_value;
 		}
+ 	
+ 		$profil["votes"] = '';
+		$votes = $wpdb->get_results("SELECT U.user_email, V.vote, V.vote_date FROM ".$wpdb->prefix."votes as V JOIN $wpdb->users as U ON V.user_id = U.ID WHERE V.device_profile_id = $row->ID "); 
+		
+		if( $votes ){
+			$arrayVotes = array();
+			foreach ($votes as $k => $vote) {
+
+				$arrayVotes[] = str_replace('"', "'", json_encode(array(
+															"user" 		=> $vote->user_email,
+															"vote_nb" 	=> $vote->vote,
+															"vote_date" => $vote->vote_date,
+													  )));
+			}
+
+
+			$profil['votes'] = implode('|', $arrayVotes);
+		} 
+		 
 	 
 		$profils[] = $profil;
 		$exporter->addRow( $profil ); 
+
 	endforeach;
 
 	$exporter->finalize();

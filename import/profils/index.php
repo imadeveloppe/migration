@@ -1,7 +1,8 @@
 <?php  
 require_once("../../../wp-load.php");
 require_once("functions.php");
-
+ 
+ 
 $CSV =  new csvParse();
 $profils = $CSV->parseFile('profils.csv');
 
@@ -14,15 +15,7 @@ foreach ($profils as $key => $profil) {
         'post_content'  => $profil->description,        
         'post_type'     => 'profils',
         'post_status'   => 'publish',
-    );
-
-    global $sitepress;
-    if( !empty( $profil->language ) ){
-		$sitepress->switch_lang( substr($profil->user_email, 0, 2) );
-    }else{
-    	$sitepress->switch_lang( 'en' );
-    }
- 
+    );   
 
 
 	$profil_id = wp_insert_post($profil_data); 
@@ -32,10 +25,12 @@ foreach ($profils as $key => $profil) {
         add_post_meta($profil_id, "userid", get_user_by_email( $profil->user_email )->ID );
 		add_post_meta($profil_id, "jeu"			,  '');
 		add_post_meta($profil_id, "produit"		,  set_product( $profil->device ) );
-    	add_post_meta($profil_id, "creationdate"	,  $profil->datetime);
-    	// add_post_meta($post_id, "thumbs"		, 0);
+    	add_post_meta($profil_id, "creationdate"	,  $profil->datetime); 
     	add_post_meta($profil_id, "profil_valide"	,  set_profile_state( $profil->status ) ); 
-		add_post_meta($profil_id, "file"			,  get_site_url().$profil->file);
+        add_post_meta($profil_id, "file"            ,  get_site_url().$profil->file);
+		add_post_meta($profil_id, "locale"			,  $profil->language);
+
+        update_field( "thumbs_nb", get_votes( $profil->votes ), $profil_id );
 
 		$nbr_profild_insered++;
 	}

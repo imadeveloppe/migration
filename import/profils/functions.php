@@ -4,7 +4,8 @@
 	{
 		echo "<pre>";
 			print_r($array);
-		echo "</pre>";   
+		echo "</pre>";  
+		die(); 
 	}
 	
 	class csvParse
@@ -73,6 +74,45 @@
 	{
 		return ( $state == 'activated' ) ? 1 : 2;
 	}
+
+	function get_votes( $votes_string, $delimiter = "|" ){
+		$output = array();   
+
+		if( strpos($votes_string, $delimiter) === false ){  
+			$votes = array($votes_string); 
+		}else{ 
+			$votes = explode($delimiter, $votes_string);
+		}
+
+		foreach ($votes as $key => $vote_json_string) {
+			$vote =  (array)json_decode( stripslashes(str_replace("'", '"', $vote_json_string)) );
+			$vote['user'] = get_user_by_email( $vote['user'] )->ID;
+			$output[] = $vote;
+		} 
+
+		return $output;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

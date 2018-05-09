@@ -46,10 +46,11 @@ foreach ($users as $key => $user) {
 			add_user_meta( $user_id, 'description'	, $user->description );
 			add_user_meta( $user_id, 'wpml'			, set_language( $user->locale ) );
 			add_user_meta( $user_id, 'birthDate'	, $user->birthdate );
-			add_user_meta( $user_id, 'country'		, set_country( $user->country ) );
-			add_user_meta( $user_id, 'produits'		, selected_product( $user->device ) );
+			add_user_meta( $user_id, 'country'		, set_country( $user->country ) ); 
 			add_user_meta( $user_id, 'etre_informe'	, 1 );
 			add_user_meta( $user_id, 'compte_valide', $user->state );
+
+			update_field( "produits", selected_product( $user->device ), 'user_'.$user_id );
 
 			$nbr_users_insered++;
 		}
@@ -81,10 +82,11 @@ foreach ($users as $key => $user) {
 			// update_user_meta( $exist_user, 'description'	, $user->description );
 			// update_user_meta( $exist_user, 'wpml'			, set_language( $user->locale ) );
 			// update_user_meta( $exist_user, 'birthDate'	, $user->birthdate );
-			// update_user_meta( $exist_user, 'country'		, set_country( $user->country ) );
-			// update_user_meta( $exist_user, 'produits'		, selected_product( $user->device ) );
+			// update_user_meta( $exist_user, 'country'		, set_country( $user->country ) ); 
 			// update_user_meta( $exist_user, 'etre_informe'	, 1 );
 			// update_user_meta( $exist_user, 'compte_valide', $user->state );
+
+			//update_field( "produits", selected_product( $user->device ), 'user_'.$user_id );
 
 			$nbr_users_updated++;
 		}
