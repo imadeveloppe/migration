@@ -69,6 +69,11 @@
 			
 	}
 
+	function set_profile_state($state)
+	{
+		return ( $state == 'activated' ) ? 1 : 2;
+	}
+
 
 
 ?>

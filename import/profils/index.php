@@ -18,27 +18,29 @@ foreach ($profils as $key => $profil) {
 
     global $sitepress;
     if( !empty( $profil->language ) ){
-		$sitepress->switch_lang( substr($profil->language, 0, 2) );
+		$sitepress->switch_lang( substr($profil->user_email, 0, 2) );
     }else{
     	$sitepress->switch_lang( 'en' );
     }
-		 
+ 
+
 
 	$profil_id = wp_insert_post($profil_data); 
 
-	if( $profil_id > 0 ){
+	if( $profil_id > 0 ){ 
 
-		add_post_meta($post_id, "jeu"			,  $_POST['select-game']);
-		add_post_meta($post_id, "produit"		,  set_product( $profil->device ) );
-    	add_post_meta($post_id, "creationdate"	,  $profil->datetime);
+        add_post_meta($profil_id, "userid", get_user_by_email( $profil->user_email )->ID );
+		add_post_meta($profil_id, "jeu"			,  '');
+		add_post_meta($profil_id, "produit"		,  set_product( $profil->device ) );
+    	add_post_meta($profil_id, "creationdate"	,  $profil->datetime);
     	// add_post_meta($post_id, "thumbs"		, 0);
-    	add_post_meta($post_id, "profil_valide"	,  set_profile_state( $profil->status ) ); 
-		add_post_meta($post_id, "file"			,  $profil->file);
+    	add_post_meta($profil_id, "profil_valide"	,  set_profile_state( $profil->status ) ); 
+		add_post_meta($profil_id, "file"			,  get_site_url().$profil->file);
 
 		$nbr_profild_insered++;
 	}
 }
 
-echo $nbr_profild_insered." user(s) insered";
+echo $nbr_profild_insered." profils(s) insered";
 
 ?>
