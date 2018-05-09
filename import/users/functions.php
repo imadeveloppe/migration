@@ -56,30 +56,52 @@
 		return '';
 	}
 
+	function get_product_id_by_ref($ref) {
+		global $wpdb;
+		$post = $wpdb->get_var ( $wpdb->prepare ( "SELECT P.ID FROM $wpdb->posts as P JOIN $wpdb->postmeta as PM on P.ID = PM.post_id WHERE meta_key = 'ref' AND meta_value = %s AND P.post_type='produits'", $ref ) );
+		if ($post)
+			return get_post ( $post, OBJECT )->ID;
+		return '';
+	}
+
 	function set_country( $country ){
 		return ( !empty( $country ) ) ? get_post_id_by_title($country, 'countries') : '';
 	}
 
 	function selected_product($product_strings, $delimiter = '|')
 	{
-		$products = array();
-		if( strpos($product_strings, $delimiter) === false ){
+		$output = array(); 
 
-			$products[] = array(
-				"prod_id" => $product_strings
-			);
 
-		}else{
 
-			foreach (explode($delimiter, $product_strings) as $key => $product) {
-				$products[] = array(
-					"prod_id" => $product
-				);
-			}
-
+		if( strpos($product_strings, $delimiter) === false ){  
+			$products = array($product_strings); 
+		}else{ 
+			$products = explode($delimiter, $product_strings);
 		}
 
-		return $products;
+		foreach ($products as $key => $product) {
+			
+			switch ( $product ) {
+				case 'gc400es':
+					$product = "PCGC-400ES";
+					break; 
+
+				case 'rpc':
+					$product = "PS4OFPADREVFRNL";
+					break; 
+
+				case 'rpc2':
+					$product = "PS4OFPADREV2";
+					break; 
+			}
+
+			$output[] = array(
+				"prod_id" => get_product_id_by_ref($product)
+			);
+		} 
+
+		return $output;
 			
 	}
 
