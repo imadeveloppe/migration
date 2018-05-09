@@ -30,6 +30,7 @@ if( !empty($results) ){
 			'profil_name', 
 			'game_type',
 			'other_game_type',
+			'platform',
 			'game_name',
 			'description',
 			'language',
@@ -73,9 +74,8 @@ if( !empty($results) ){
 
 			$profil['votes'] = implode('|', $arrayVotes);
 		} 
-		 
-	 	$profil = array_merge(array_flip( $heading ), $profil);
-		$exporter->addRow( $profil ); 
+
+		$exporter->addRow( array_merge(array_flip( $heading ), $profil) ); 
 
 	endforeach;
 
